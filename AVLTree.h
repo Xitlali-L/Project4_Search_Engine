@@ -41,11 +41,12 @@ private:
     void balance(AVLNode* &);
     int height(AVLNode* &);
     void clone(AVLNode* &, AVLNode* &);
-    void print(ostream &, AVLNode* &);
+    void printTree(ostream &, AVLNode* &);
     void rotateLeft(AVLNode* &);
     void rotateDoubleLeft(AVLNode* &);
     void rotateRight(AVLNode* &);
     void rotateDoubleRight(AVLNode* &);
+    void insert(key, value, int, AVLNode* &);
 
 public:
     AVLTree();
@@ -62,6 +63,7 @@ public:
     void insert(const key &, const value &);
     int getSize();
     void printTree(ostream &);
+    void insert(key, value, int);
 };
 
 
@@ -87,7 +89,7 @@ map<key, int> AVLTree<key, value>::getNode(const key & k, AVLNode *& node) {
     if(node == nullptr) {
         return map<value, int>();
     }
-    //returning recurrsive call
+    //returning recursive call
     else if(k < node->k) {
         return getnode(k,node->left);
     }
@@ -156,6 +158,7 @@ void AVLTree<key, value>::balance(AVLNode *& node) {
         }
         //updating the height of the node after the rotations were made
         node->height = max(height(node->left), height(node->right)) + 1;
+    }
 }
 
 template<typename key, typename value>
@@ -177,7 +180,7 @@ void AVLTree<key, value>::clone(AVLNode *& curr, AVLNode *& copy) {
         //have the same key and height because it's copying from scratch
         curr = new AVLNode(copy->k, nullptr, nullptr, copy->height);
         curr-> r = copy-> conDOC;
-        //the reference lets us go back and do backwards reccrrence
+        //the reference lets us go back and do backwards recurrence
         clone(curr->left, copy->left);
         clone(curr->right, copy->right);
         size++;
@@ -185,8 +188,24 @@ void AVLTree<key, value>::clone(AVLNode *& curr, AVLNode *& copy) {
 }
 
 template<typename key, typename value>
-void AVLTree<key, value>::print(ostream &, AVLNode *&) {
+void AVLTree<key, value>::printTree(ostream &out, AVLNode *&node) {
+    //base case
+    if(node != nullptr) {
+        //in order traversial
+        printTree(out, node->left);
+        //print the contents of the map
+        //using two delimiters
+        out << node->k;
 
+        //going through all the docs with this word and printing the docs and frequency
+        //creating a new pair and using a semicolon to seperate pairs
+        for(const pair <value, int>& itr : node->conDoc) {
+            //document = first and frequencey = second
+            out << ";" << itr.first << "," << itr.second;
+        }
+        out << endl;
+        printTree(out, node->right);
+    }
 }
 
 template<typename key, typename value>
@@ -196,7 +215,7 @@ void AVLTree<key, value>::rotateLeft(AVLNode *& node) {
     node->left = curr->right;
     curr->right = node;
     //how many level from the bottom is the node at
-    node->height = max(height (n->left), height (n->right)) + 1;
+    node->height = max(height (node->left), height (node->right)) + 1;
     //similar thing with curr//
     node = curr;
 }
@@ -228,8 +247,23 @@ void AVLTree<key, value>::rotateDoubleRight(AVLNode *& node) {
     rotateRight(node);
 }
 
+template<typename key, typename value>
+void AVLTree<key, value>::insert(key k, value val, int f, AVLNode *& node) {
+    if(node == nullptr) {
+        node = new AVLNode(k);
+        node->v[val] = f;
+        size++;
+    }
+    else if(node->k == k) {
+        node->v[val] = f;
+    }
+}
+
+
+
 
 //public functions
+//most of the public functions calling its corresponding private function
 
 template<typename key, typename value>
 AVLTree<key, value>::AVLTree() {
@@ -275,8 +309,13 @@ int AVLTree<key, value>::getSize() {
 }
 
 template<typename key, typename value>
-void AVLTree<key, value>::printTree(ostream &) {
-    print(root);
+void AVLTree<key, value>::printTree(ostream &out) {
+    printTree(out, root);
+}
+
+template<typename key, typename value>
+void AVLTree<key, value>::insert(key k, value v, int f) {
+    insert(k, v, f, root);
 }
 
 
