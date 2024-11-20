@@ -49,7 +49,7 @@ void userInterface::startUserInterface() {
         else if(choice == "1") {
             string path;
             //asking user for path archive
-            cout << "Enter path here: " << endl;
+            cout << '\n' << "Enter path here: " << endl;
             getline(cin, path);
             runDocParser(path);
         }
@@ -64,7 +64,7 @@ void userInterface::startUserInterface() {
         else if(choice == "4") {
             //prompting user for query
             string query;
-            cout << "Enter query here: " << endl;
+            cout << '\n' << "Enter query here: " << endl;
             getline(cin, query);
             runQueryEngine(query);
         }
@@ -130,7 +130,7 @@ void userInterface::runQueryEngine(string query) {
             }
             string choice;
             while(choice != "0") {
-                cout << "Enter result number to view text or 0 to quit..." << endl;
+                cout << '\n' << "Enter result number to view text or 0 to quit..." << endl;
                 getline(cin, choice);
                 //turning getline into an int and subtracting from the index we added to previously
                 int index = stoi(choice) - 1;
