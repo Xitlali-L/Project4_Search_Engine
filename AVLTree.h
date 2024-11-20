@@ -40,7 +40,7 @@ private:
     void insert(const key &, const value &, AVLNode* &);
     void balance(AVLNode* &);
     int height(AVLNode* &);
-    void clone(AVLNode* &, AVLNode* &);
+    void clone(AVLNode* &, const AVLNode*);
     void printTree(ostream &, AVLNode* &);
     void rotateLeft(AVLNode* &);
     void rotateDoubleLeft(AVLNode* &);
@@ -72,7 +72,7 @@ public:
 template<typename key, typename value>
 void AVLTree<key, value>::clear(AVLNode *& node) {
     //base case:
-    if(node = nullptr) {
+    if(node == nullptr) {
         return;
     }
     //action - deleting the node (post-order transversal)
@@ -91,10 +91,10 @@ map<key, int> AVLTree<key, value>::getNode(const key & k, AVLNode *& node) {
     }
     //returning recursive call
     else if(k < node->k) {
-        return getnode(k,node->left);
+        return getNode(k,node->left);
     }
     else if(k > node->k) {
-        return getnode(k, node->right);
+        return getNode(k, node->right);
     }
     //else return conDoc map
     else {
@@ -175,11 +175,11 @@ int AVLTree<key, value>::height(AVLNode *& node) {
 template<typename key, typename value>
 //(pre-order to copy parents then childs) curr is empty for now
 //copy is the tree were copying from and putting into curr tree
-void AVLTree<key, value>::clone(AVLNode *& curr, AVLNode *& copy) {
+void AVLTree<key, value>::clone(AVLNode *& curr, const AVLNode * copy) {
     if(copy != nullptr) {
         //have the same key and height because it's copying from scratch
         curr = new AVLNode(copy->k, nullptr, nullptr, copy->height);
-        curr-> r = copy-> conDOC;
+        curr->conDoc = copy-> conDoc;
         //the reference lets us go back and do backwards recurrence
         clone(curr->left, copy->left);
         clone(curr->right, copy->right);
@@ -251,12 +251,20 @@ template<typename key, typename value>
 void AVLTree<key, value>::insert(key k, value val, int f, AVLNode *& node) {
     if(node == nullptr) {
         node = new AVLNode(k);
-        node->v[val] = f;
+        node->conDoc[val] = f;
         size++;
     }
     else if(node->k == k) {
-        node->v[val] = f;
+        node->conDoc[val] = f;
     }
+    //placing the new node wither on the left or the right branch
+    else if(k < node->k) {
+        insert(k, val, f, node->left);
+    }
+    else {
+        insert(k, val, f, node->right);
+    }
+    balance(node);
 }
 
 
@@ -272,12 +280,12 @@ AVLTree<key, value>::AVLTree() {
 }
 
 template<typename key, typename value>
-AVLTree<key, value>::AVLTree(const AVLTree &) {
+AVLTree<key, value>::AVLTree(const AVLTree &copy) {
     clone(root, copy.root);
 }
 
 template<typename key, typename value>
-AVLTree<key, value> AVLTree<key, value>::operator=(const AVLTree &) {
+AVLTree<key, value> AVLTree<key, value>::operator=(const AVLTree &copy) {
     clear();
     clone(root, copy.root);
     return *this;
@@ -294,13 +302,13 @@ void AVLTree<key, value>::clear() {
 }
 
 template<typename key, typename value>
-map<value, int> AVLTree<key, value>::getnode(const key &) {
-    getnode(root);
+map<value, int> AVLTree<key, value>::getnode(const key &k) {
+    return getNode(k, root);
 }
 
 template<typename key, typename value>
-void AVLTree<key, value>::insert(const key &, const value &) {
-    insert(root);
+void AVLTree<key, value>::insert(const key &k, const value &v) {
+    insert(k, v, root);
 }
 
 template<typename key, typename value>

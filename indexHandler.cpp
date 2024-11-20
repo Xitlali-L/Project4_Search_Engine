@@ -86,8 +86,8 @@ void indexHandler::readPersist() {
         stringstream ss(buffer);
 
         //reading in the key
-        string ppl;
-        getline(ss, ppl, ';');
+        string person;
+        getline(ss, person, ';');
 
         //while file hasn't ended
         while(!ss.eof()) {
@@ -101,7 +101,7 @@ void indexHandler::readPersist() {
             int freq = stoi(freqStr);
 
             //inserting the word into tree word, document found in, and frequency
-            words.insert(ppl, doc, freq);
+            ppl.insert(person, doc, freq);
         }
 
     }
@@ -120,8 +120,8 @@ void indexHandler::readPersist() {
         stringstream ss(buffer);
 
         //reading in the key
-        string orgs;
-        getline(ss, orgs, ';');
+        string organ;
+        getline(ss, organ, ';');
 
         //while file hasn't ended
         while(!ss.eof()) {
@@ -135,10 +135,21 @@ void indexHandler::readPersist() {
             int freq = stoi(freqStr);
 
             //inserting the word into tree word, document found in, and frequency
-            words.insert(orgs, doc, freq);
+            orgs.insert(organ, doc, freq);
         }
     }
     inFile.close();
+}
+
+void indexHandler::addDocCount(string doc) {
+    if(docCounts.find(doc) == docCounts.end()) {
+        //if the doc was never seen before
+        docCounts[doc] = 1;
+    }
+}
+
+int indexHandler::getDocCount(string doc) {
+    return docCounts[doc];
 }
 
 

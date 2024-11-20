@@ -1,1 +1,5 @@
-cmake-build-debug
+cmake-build-debug/
+archive.zip
+archive/
+cmake-build-release/
+data/

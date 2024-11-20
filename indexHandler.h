@@ -22,9 +22,12 @@ private:
     //map for organizations
     AVLTree<string, string> orgs;
 
+    map<string,int> docCounts;
+
 public:
     //setter for adding word
     void addWord(string word, string doc) {
+        addDocCount(doc);
         words.insert(word, doc);
     }
 
@@ -35,6 +38,7 @@ public:
 
     //setter for adding people
     void addPpl(string word, string doc) {
+        addDocCount(doc);
         ppl.insert(word, doc);
     }
 
@@ -45,6 +49,7 @@ public:
 
     //setter for adding organizations
     void addOrg(string word, string doc) {
+        addDocCount(doc);
         orgs.insert(word, doc);
     }
 
@@ -57,6 +62,9 @@ public:
     void makePersist();
     //reading the persistence to populate trees
     void readPersist();
+
+    void addDocCount(string);
+    int getDocCount(string);
 };
 
 
